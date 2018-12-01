@@ -23,3 +23,7 @@ text {
   stroke: #777;
   fill: #999;
 }
+
+.tooltip-marker {
+  fill: #777;
+}

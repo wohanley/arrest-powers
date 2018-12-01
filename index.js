@@ -332,6 +332,14 @@ const render = graph => {
     .each(function (nodeName) {
       const detail = graph.node(nodeName).detail;
       if (detail) {
+        const width = d3.select(this).select('rect').attr('width');
+        const marker = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        marker.setAttributeNS(null, 'class', 'tooltip-marker');
+        marker.setAttributeNS(null, 'x', width / 2 + 3);
+        marker.setAttributeNS(null, 'y', -3);
+        marker.textContent = '?';
+        this.appendChild(marker);
+
         tippy(this, {
           content: detail,
           trigger: "mouseenter focus click",
