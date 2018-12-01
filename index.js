@@ -326,15 +326,14 @@ const createGraph = (nodes, edges, facts) => {
 const render = graph => {
   const dagreRender = new dagreD3.render();
 
-  const svg = d3.select('svg');
+  const svg = d3.select('svg').select('g');
   svg.selectAll('*').remove();
-  const inner = svg.append('g');
 
-  dagreRender(inner, graph);
+  dagreRender(svg, graph);
 
   // add tooltips
 
-  inner.selectAll('.node')
+  svg.selectAll('.node')
     .each(function (nodeName) {
       const detail = graph.node(nodeName).detail;
       if (detail) {
@@ -362,6 +361,10 @@ let facts = {
   warrant: null, // true | false
   offenceCategory: null // 'summary' | 'hybrid' | 'indictableShort' | 'indictableLong' | 's469' | 's553'
 };
+
+const svg = d3.select('svg');
+const canvas = svg.append('g');
+svg.call(d3.zoom().on("zoom", () => canvas.attr('transform', d3.event.transform)));
 
 render(createGraph(nodes, edges, facts));
 
