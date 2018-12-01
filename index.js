@@ -129,7 +129,7 @@ const nodes = {
   },
   policeAppearanceNotice: {
     label: "Police shall issue an appearance notice",
-    detail: "[s. 496] Although they do technically still have the power to make an arrest under s. 495(1).",
+    detail: "[s. 496] Although they do technically still have the power to make an arrest under s. 495(1). This means that an arrest is still valid under the Criminal Code and the person may not resist, but they could bring a civil suit for assault or false imprisonment [s. 495(3)].",
     irrelevance: {
       warrant: true
     }
