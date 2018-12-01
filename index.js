@@ -318,13 +318,27 @@ const createGraph = (nodes, edges, facts) => {
 // Render
 
 const render = graph => {
-  const render = new dagreD3.render();
+  const dagreRender = new dagreD3.render();
 
   const svg = d3.select('svg');
   svg.selectAll('*').remove();
   const inner = svg.append('g');
 
-  render(inner, graph);
+  dagreRender(inner, graph);
+
+  // add tooltips
+
+  inner.selectAll('.node')
+    .each(function (nodeName) {
+      const detail = graph.node(nodeName).detail;
+      if (detail) {
+        tippy(this, {
+          content: detail,
+          trigger: "mouseenter focus click",
+          interactive: true
+        });
+      }
+    });
 };
 
 // Main
