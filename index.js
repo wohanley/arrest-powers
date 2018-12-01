@@ -13,16 +13,14 @@ const isIndictable = offenceCategory =>
       || offenceCategory === 's469'
       || offenceCategory === 's553';
 
-const isRelevant = (requirements, circumstances) => {
-  passes = true;
-  for (key in requirements) {
-    req = requirements[key];
-    if (typeof req === 'function') {
-      passes = req(circumstances[key]);
-    } else {
-      passes = req === circumstances[key];
-    }
+const isRelevant = (irrelevance, facts) => {
+  for (key in irrelevance) {
+    irrelevantIf = irrelevance[key];
+    if (typeof irrelevantIf === 'function' && irrelevantIf(facts[key])) return false;
+    if (irrelevantIf === facts[key]) return false;
   }
+
+  return true;
 };
 
 // Model
@@ -30,30 +28,42 @@ const isRelevant = (requirements, circumstances) => {
 const nodes = {
   whoArresting: {
     label: "Who is making the arrest?",
-    requires: {
-      arrestingPerson: null
+    irrelevance: {
+      arrestingPerson: p => p !== null
     }
   },
   citizenArresting: {
     label: "Lawful where:",
-    requires: {
-      arrestingPerson: p => p === null || p === 'citizen'
+    irrelevance: {
+      arrestingPerson: 'police'
     },
-    click: circumstances => toggleNull(circumstances, 'arrestingPerson', 'citizen')
+    click: facts => toggleNull(facts, 'arrestingPerson', 'citizen')
   },
   citizenFoundCommitting: {
-    label: "Found the person committing\nan indictable offence [s. 494(1)(a)]"
+    label: "Found the person committing\nan indictable offence [s. 494(1)(a)]",
+    irrelevance: {
+      arrestingPerson: 'police'
+    }
   },
   citizenPursuit: {
     label: "Accused being pursued",
-    detail: "The citizen has reasonable grounds to believe the person has committed a criminal offence (of any type) and is escaping from and freshly pursued by someone with lawful authority to arrest them [s. 494(1)(b)]"
+    detail: "The citizen has reasonable grounds to believe the person has committed a criminal offence (of any type) and is escaping from and freshly pursued by someone with lawful authority to arrest them [s. 494(1)(b)]",
+    irrelevance: {
+      arrestingPerson: 'police'
+    }
   },
   citizenProperty: {
     label: "Offence committed in regard\nto citizen's property",
-    detail: "The citizen is the owner or lawful possessor of property (or their authorized agent) and they found the person committing any offence in regard to their property (a) at the time of the offence or (b) within a reasonable time after the offence, if it wasn't feasible to get a police officer [s. 494(2)]."
+    detail: "The citizen is the owner or lawful possessor of property (or their authorized agent) and they found the person committing any offence in regard to their property (a) at the time of the offence or (b) within a reasonable time after the offence, if it wasn't feasible to get a police officer [s. 494(2)].",
+    irrelevance: {
+      arrestingPerson: 'police'
+    }
   },
   citizenReleaseToPeaceOfficer: {
-    label: "The person must be delivered\nforthwith to a peace officer [s. 494(3)]."
+    label: "The person must be delivered\nforthwith to a peace officer [s. 494(3)].",
+    irrelevance: {
+      arrestingPerson: 'police'
+    }
   },
   policeArresting: {
     label: "Is there a warrant?"
@@ -191,37 +201,63 @@ const edges = [
   { from: 'releaseOfficerInChargeDecision', to: 'releaseOfficerInCharge', label: "No" },
 ];
 
-const circumstances = {
+// Set up graph
+
+const createGraph = (nodes, edges, facts) => {
+  const nodeViews = _.mapValues(nodes, node => {
+    const view = Object.assign({}, node);
+    if (!isRelevant(node.irrelevance, facts)) view.class = 'irrelevant';
+    return view;
+  });
+
+  const graph = new dagreD3.graphlib.Graph().setGraph({});
+
+  for (key in nodeViews) {
+    graph.setNode(key, nodeViews[key]);
+  }
+
+  for (key in edges) {
+    const edge = edges[key];
+    graph.setEdge(edge.from, edge.to, { label: edge.label });
+  }
+
+  return graph;
+};
+
+// Render
+
+const render = graph => {
+  const render = new dagreD3.render();
+
+  const svg = d3.select('svg');
+  svg.selectAll('*').remove();
+  const inner = svg.append('g');
+
+  render(inner, graph);
+};
+
+// Main
+
+let facts = {
   arrestingPerson: null, // 'citizen' | 'police'
   warrant: null, // true | false
   offenceCategory: null // 'summary' | 'hybrid' | 'indictable' | 's469' | 's553'
 };
 
-// Make node view models
+render(createGraph(nodes, edges, facts));
 
-const nodeViews = _.mapValues(nodes, node => {
-  const view = Object.assign({}, node);
-  if (!isRelevant(node.requirements, circumstances)) node.class = 'irrelevant';
-  return view;
+d3.selectAll('input').on('input', function () {
+  const form = document.getElementById('facts');
+
+  facts = {
+    arrestingPerson: form.elements['arrestingPerson'].value || null,
+    warrant: null,
+    offenceCategory: form.elements['offenceCategory'].value || null
+  };
+
+  warrantValue = form.elements['warrant'].value;
+  if (warrantValue === 'true') facts.warrant = true;
+  if (warrantValue === 'false') facts.warrant = false;
+
+  render(createGraph(nodes, edges, facts));
 });
-
-// Set up graph
-
-const graph = new dagreD3.graphlib.Graph().setGraph({});
-
-for (key in nodeViews) {
-  graph.setNode(key, nodeViews[key]);
-}
-
-for (key in edges) {
-  const edge = edges[key];
-  graph.setEdge(edge.from, edge.to, { label: edge.label });
-}
-
-// Render
-
-const svg = d3.select('svg');
-const inner = svg.append('g');
-
-const render = new dagreD3.render();
-render(inner, graph);

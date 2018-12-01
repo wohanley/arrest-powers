@@ -5,6 +5,23 @@
     <link rel="stylesheet" href="style.css"/>
   </head>
   <body>
+    <form id="facts">
+      <section>
+        <label><input type="radio" name="arrestingPerson" value="citizen"> Citizen</label>
+        <label><input type="radio" name="arrestingPerson" value="police"> Police officer</label>
+      </section>
+      <section>
+        <label><input type="radio" name="offenceCategory" value="summary"> Summary</label>
+        <label><input type="radio" name="offenceCategory" value="hybrid"> Hybrid</label>
+        <label><input type="radio" name="offenceCategory" value="s553"> s. 553 indictable</label>
+        <label><input type="radio" name="offenceCategory" value="s469"> s. 469 indictable</label>
+        <label><input type="radio" name="offenceCategory" value="indictable"> Other indictable</label>
+      </section>
+      <section>
+        <label><input type="radio" name="warrant" value="true"> Yes</label>
+        <label><input type="radio" name="warrant" value="false"> No</label>
+      </section>
+    </form>
     <svg height="3000" width="3000"></svg>
     <script src="./bower_components/lodash/dist/lodash.js"></script>
     <script src="./bower_components/d3/d3.js"></script>

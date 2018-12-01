@@ -18,3 +18,8 @@ text {
   stroke: #333;
   stroke-width: 1.5px;
 }
+
+.node.irrelevant rect {
+  stroke: #777;
+  fill: #999;
+}
