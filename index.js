@@ -13,7 +13,7 @@ const isIndictable = offenceCategory =>
       || offenceCategory === 's469'
       || offenceCategory === 's553';
 
-const checkRequirements = (requirements, circumstances) => {
+const isRelevant = (requirements, circumstances) => {
   passes = true;
   for (key in requirements) {
     req = requirements[key];
@@ -197,12 +197,20 @@ const circumstances = {
   offenceCategory: null // 'summary' | 'hybrid' | 'indictable' | 's469' | 's553'
 };
 
+// Make node view models
+
+const nodeViews = _.mapValues(nodes, node => {
+  const view = Object.assign({}, node);
+  if (!isRelevant(node.requirements, circumstances)) node.class = 'irrelevant';
+  return view;
+});
+
 // Set up graph
 
 const graph = new dagreD3.graphlib.Graph().setGraph({});
 
-for (key in nodes) {
-  graph.setNode(key, nodes[key]);
+for (key in nodeViews) {
+  graph.setNode(key, nodeViews[key]);
 }
 
 for (key in edges) {
