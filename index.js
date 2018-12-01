@@ -1,5 +1,11 @@
 // Utilities
 
+const booleanFromString = str => {
+  if (str === 'true') return true;
+  if (str === 'false') return false;
+  return null;
+};
+
 const toggleNull = (obj, key, val) => {
   if (obj[key] !== val) {
     obj[key] = val;
@@ -359,18 +365,24 @@ let facts = {
 
 render(createGraph(nodes, edges, facts));
 
-d3.selectAll('input').on('input', function () {
+d3.selectAll('input').on('click', function () {
   const form = document.getElementById('facts');
 
   facts = {
-    arrestingPerson: form.elements['arrestingPerson'].value || null,
-    warrant: null,
-    offenceCategory: form.elements['offenceCategory'].value || null
+    arrestingPerson: this.name === 'arrestingPerson' && this.value === facts.arrestingPerson
+      ? null
+      : (form.elements['arrestingPerson'].value || null),
+    warrant: this.name === 'warrant' && booleanFromString(this.value) === facts.warrant
+      ? null
+      : booleanFromString(form.elements['warrant'].value),
+    offenceCategory: this.name === 'offenceCategory' && this.value === facts.offenceCategory
+      ? null
+      : (form.elements['offenceCategory'].value || null)
   };
 
-  warrantValue = form.elements['warrant'].value;
-  if (warrantValue === 'true') facts.warrant = true;
-  if (warrantValue === 'false') facts.warrant = false;
+  if (facts.arrestingPerson === null) document.querySelectorAll('input[name="arrestingPerson"]').forEach(n => n.checked = false);
+  if (facts.warrant === null) document.querySelectorAll('input[name="warrant"]').forEach(n => n.checked = false);
+  if (facts.offenceCategory === null) document.querySelectorAll('input[name="offenceCategory"]').forEach(n => n.checked = false);
 
   render(createGraph(nodes, edges, facts));
 });
