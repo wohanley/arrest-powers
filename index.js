@@ -66,94 +66,183 @@ const nodes = {
     }
   },
   policeArresting: {
-    label: "Is there a warrant?"
+    label: "Is there a warrant?",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: false
+    }
   },
   policeArrestWarrant: {
-    label: "Police may arrest"
+    label: "Police may arrest",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: false
+    }
   },
   policeWarrantless: {
-    label: "Lawful where:"
+    label: "Lawful where:",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: true
+    }
   },
   policeIndictable: {
-    label: "The person has committed\nor is about to commit\nan indictable offence"
+    label: "The person has committed\nor is about to commit\nan indictable offence",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: true
+    }
   },
   policeInAct: {
-    label: "Police find the person\ncommittinga criminal offence\n(of any type)"
+    label: "Police find the person\ncommittinga criminal offence\n(of any type)",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: true
+    }
   },
   policeBelieveWarrant: {
-    label: "Police believe person\nis subject to a warrant"
+    label: "Police believe person\nis subject to a warrant",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: true
+    }
   },
   policeWarrantlessCategory: {
-    label: "Is the offence a s. 553, hybrid,\nor summary conviction offence?"
+    label: "Is the offence a s. 553, hybrid,\nor summary conviction offence?",
+    irrelevance: {
+      warrant: true
+    }
   },
   policeWarrantlessPublic: {
     label: "Can the public interest be\nsatisfied without arrest?",
-    detail: "Officer must have reasonable grounds to believe it can - criteria set out in s. 495(2)(d)(i-iii) and s. 495(2)(e)."
+    detail: "Officer must have reasonable grounds to believe it can - criteria set out in s. 495(2)(d)(i-iii) and s. 495(2)(e).",
+    irrelevance: {
+      warrant: true
+    }
   },
   policeAppearanceNotice: {
     label: "Police shall issue an appearance notice",
-    detail: "[s. 496] Although they do technically still have the power to make an arrest under s. 495(1)."
+    detail: "[s. 496] Although they do technically still have the power to make an arrest under s. 495(1).",
+    irrelevance: {
+      warrant: true
+    }
   },
   policeArrestWarrantless: {
-    label: "Police may arrest"
+    label: "Police may arrest",
+    irrelevance: {
+      warrant: true
+    }
   },
   warrantApplication: {
-    label: "Justice may, after reviewing an information:"
+    label: "Justice may, after reviewing an information:",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: false
+    }
   },
   summons: {
     label: "Issue a summons",
-    detail: "Must be served personally"
+    detail: "Must be served personally",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: w => w !== null
+    }
   },
   warrantIssue: {
     label: "Issue a warrant",
-    details: "Occurs where the justice has reasonable grounds to believe that it is necessary in the public interest [s. 507(4)]"
+    details: "Occurs where the justice has reasonable grounds to believe that it is necessary in the public interest [s. 507(4)]",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: false
+    }
   },
   releaseWarrantEndorsement: {
-    label: "Has the judge endorsed the warrant?"
+    label: "Has the judge endorsed the warrant?",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: false
+    }
   },
   releaseWarrantEndorsed: {
     label: "May release subject to conditions",
-    detail: "Officer in charge can release subject to a number of possible conditions including promises to appear or entering into a recognizance [s. 499]."
+    detail: "Officer in charge can release subject to a number of possible conditions including promises to appear or entering into a recognizance [s. 499].",
+    irrelevance: {
+      arrestingPerson: 'citizen',
+      warrant: false
+    }
   },
   releaseOffenceCategory: {
     label: "Release depends on offence"
   },
   releaseSummary: {
-    label: "s. 553, hybrid, or summary offence"
+    label: "s. 553, hybrid, or summary offence",
+    irrelevance: {
+      offenceCategory: c => !_.includes([null, 'summary', 'hybrid', 's553'], c)
+    }
   },
   releaseIndictable: {
-    label: "Indictable offence other than s. 469 or s. 553"
+    label: "Indictable offence other than s. 469 or s. 553",
+    irrelevance: {
+      offenceCategory: c => !_.includes([null, 'indictableShort', 'indictableLong'], c)
+    }
   },
   releaseIndictableLess5: {
-    label: "Punishable by five years or less"
+    label: "Punishable by five years or less",
+    irrelevance: {
+      offenceCategory: c => c !== null && c !== 'indictableShort'
+    }
   },
   releaseIndictableGreater5: {
-    label: "Punishable by more than five years"
+    label: "Punishable by more than five years",
+    irrelevance: {
+      offenceCategory: c => c !== null && c !== 'indictableLong'
+    }
   },
   release469: {
-    label: "s. 469 offence"
+    label: "s. 469 offence",
+    irrelevance: {
+      offenceCategory: c => c !== null && c !== 's469'
+    }
   },
   releaseSuperiorOnly: {
-    label: "Only a superior court judge\ncan authorize release [s. 522]"
+    label: "Only a superior court judge\ncan authorize release [s. 522]",
+    irrelevance: {
+      offenceCategory: c => c !== null && c !== 's469'
+    }
   },
   releaseArrestingOfficerDecision: {
     label: "Arresting officer: Is detention\nnecessary in the public interest?",
-    detail: "[s. 497(1)] Public interest criteria are listed in s. 497(1.1)(a) and (b)"
+    detail: "[s. 497(1)] Public interest criteria are listed in s. 497(1.1)(a) and (b)",
+    irrelevance: {
+      offenceCategory: c => _.includes(['s469', 'indictableShort', 'indictableLong'], c)
+    }
   },
   releaseArrestingOfficer: {
-    label: "Arresting officer shall release\nwith the intention to obtain a\nsummons or with an appearance notice"
+    label: "Arresting officer shall release\nwith the intention to obtain a\nsummons or with an appearance notice",
+    irrelevance: {
+      offenceCategory: c => _.includes(['s469', 'indictableShort', 'indictableLong'], c)
+    }
   },
   releaseOfficerInChargeDecision: {
     label: "Officer in charge: Is detention\nnecessary in the public interest?",
-    detail: "[s. 498(1)] Public interest criteria listed in s. 498(1.1)(a) and (b)"
+    detail: "[s. 498(1)] Public interest criteria listed in s. 498(1.1)(a) and (b)",
+    irrelevance: {
+      offenceCategory: c => _.includes(['s469', 'indictableLong'], c)
+    }
   },
   releaseOfficerInCharge: {
     label: "Officer in charge shall release\nthe person with conditions",
-    detail: "OIC can release with intention to obtain a summons, upon a promise to appear, or upon the person entering into a recognizance. OIC may impose other conditions and undertakings, e.g. no communication with certain parties, report to an officer, no weapons [s. 503(2) and (2.1)]"
+    detail: "OIC can release with intention to obtain a summons, upon a promise to appear, or upon the person entering into a recognizance. OIC may impose other conditions and undertakings, e.g. no communication with certain parties, report to an officer, no weapons [s. 503(2) and (2.1)]",
+    irrelevance: {
+      offenceCategory: c => _.includes(['s469', 'indictableLong'], c)
+    }
   },
   releaseJustice: {
     label: "Police must bring person before a justice",
-    detail: "Must happen as soon as possible, within 24 hours if a justice is available [s. 503(1)]. Bail is governed by s. 515."
+    detail: "Must happen as soon as possible, within 24 hours if a justice is available [s. 503(1)]. Bail is governed by s. 515.",
+    irrelevance: {
+      offenceCategory: c => _.includes(['s469'], c)
+    }
   }
 };
 
@@ -199,6 +288,7 @@ const edges = [
   { from: 'releaseArrestingOfficerDecision', to: 'releaseArrestingOfficer', label: "No" },
   { from: 'releaseArrestingOfficerDecision', to: 'releaseOfficerInChargeDecision', label: "Yes" },
   { from: 'releaseOfficerInChargeDecision', to: 'releaseOfficerInCharge', label: "No" },
+  { from: 'releaseOfficerInChargeDecision', to: 'releaseJustice', label: "Yes" },
 ];
 
 // Set up graph
@@ -241,7 +331,7 @@ const render = graph => {
 let facts = {
   arrestingPerson: null, // 'citizen' | 'police'
   warrant: null, // true | false
-  offenceCategory: null // 'summary' | 'hybrid' | 'indictable' | 's469' | 's553'
+  offenceCategory: null // 'summary' | 'hybrid' | 'indictableShort' | 'indictableLong' | 's469' | 's553'
 };
 
 render(createGraph(nodes, edges, facts));
