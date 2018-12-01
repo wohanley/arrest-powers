@@ -87,6 +87,7 @@ const nodes = {
   },
   policeWarrantless: {
     label: "Lawful where:",
+    detail: "[s. 495(1)]",
     irrelevance: {
       arrestingPerson: 'citizen',
       warrant: true
@@ -141,6 +142,7 @@ const nodes = {
   },
   warrantApplication: {
     label: "Justice may, after reviewing an information:",
+    detail: "Police or anyone else can lay an information before a justice, must make case to compel appearance of accused [s. 507(1)]",
     irrelevance: {
       arrestingPerson: 'citizen',
       warrant: false
@@ -156,7 +158,7 @@ const nodes = {
   },
   warrantIssue: {
     label: "Issue a warrant",
-    details: "Occurs where the justice has reasonable grounds to believe that it is necessary in the public interest [s. 507(4)]",
+    detail: "Occurs where the justice has reasonable grounds to believe that it is necessary in the public interest [s. 507(4)]",
     irrelevance: {
       arrestingPerson: 'citizen',
       warrant: false
