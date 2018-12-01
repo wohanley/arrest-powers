@@ -168,7 +168,8 @@ const nodes = {
     detail: "Officer in charge can release subject to a number of possible conditions including promises to appear or entering into a recognizance [s. 499].",
     irrelevance: {
       arrestingPerson: 'citizen',
-      warrant: false
+      warrant: false,
+      offenceCategory: 's469'
     }
   },
   releaseOffenceCategory: {
