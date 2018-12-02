@@ -101,7 +101,7 @@ const nodes = {
     }
   },
   policeInAct: {
-    label: "Police find the person\ncommittinga criminal offence\n(of any type)",
+    label: "Police find the person\ncommitting a criminal offence\n(of any type)",
     irrelevance: {
       arrestingPerson: 'citizen',
       warrant: true
